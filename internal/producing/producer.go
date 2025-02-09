@@ -26,3 +26,27 @@ func (p *Producer) Run(ctx context.Context) error {
 		}
 	}
 }
+
+func (p *Producer) RunCtx(ctx context.Context) error {
+	for {
+		select {
+		case <-ctx.Done():
+			slog.Info("producer done")
+			return ctx.Err()
+		default:
+			p.recorder.SubmitCtx(ctx, struct{}{})
+		}
+	}
+}
+
+func (p *Producer) RunCtxSelect(ctx context.Context) error {
+	for {
+		select {
+		case <-ctx.Done():
+			slog.Info("producer done")
+			return ctx.Err()
+		default:
+			p.recorder.SubmitCtxSelect(ctx, struct{}{})
+		}
+	}
+}

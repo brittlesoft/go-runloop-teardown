@@ -23,11 +23,6 @@ func TestPatate(t *testing.T) {
 			recorder := recording.NewRecorder()
 			producer := producing.NewProducer(recorder)
 
-			go func() {
-				time.Sleep(10 * time.Millisecond)
-				cancel()
-			}()
-
 			eg, egCtx := errgroup.WithContext(ctx)
 			eg.Go(func() error { return recorder.Run(egCtx) })
 			eg.Go(func() error {
@@ -43,12 +38,17 @@ func TestPatate(t *testing.T) {
 				}
 			})
 
+			go func() {
+				time.Sleep(10 * time.Millisecond)
+				cancel()
+			}()
+
 			doneCh := make(chan error)
 			go func() {
 				doneCh <- eg.Wait()
 			}()
 
-			timeout := time.NewTimer(100 * time.Millisecond)
+			timeout := time.NewTimer(20 * time.Millisecond)
 			select {
 			case <-doneCh:
 			case <-timeout.C:

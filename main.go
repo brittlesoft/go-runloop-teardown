@@ -18,7 +18,7 @@ func main() {
 	eg, egCtx := errgroup.WithContext(ctx)
 
 	eg.Go(func() error { return recorder.Run(egCtx) })
-	eg.Go(func() error { return producer.Run(egCtx) })
+	eg.Go(func() error { return producer.RunCtxSelect(egCtx) })
 
 	eg.Wait()
 }
